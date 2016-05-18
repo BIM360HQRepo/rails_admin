@@ -24,9 +24,12 @@ module RailsAdmin
             elsif request.put? # UPDATE
               sanitize_params_for!(request.xhr? ? :modal : :update)
 
-              @object.set_attributes(params[@abstract_model.param_key])
+              record_params = params[@abstract_model.param_key]
+              @object.set_attributes(record_params)
+              record_params.each do |key, value|
+                @object.send("#{key}=", nil) if value == "%nil%"
+              end
               @authorization_adapter && @authorization_adapter.attributes_for(:update, @abstract_model).each do |name, value|
-                value = nil if value == "%@nil@%"
                 @object.send("#{name}=", value)
               end
               changes = @object.changes
