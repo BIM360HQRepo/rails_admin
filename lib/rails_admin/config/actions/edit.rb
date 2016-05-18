@@ -25,10 +25,10 @@ module RailsAdmin
               sanitize_params_for!(request.xhr? ? :modal : :update)
 
               record_params = params[@abstract_model.param_key]
-              @object.set_attributes(record_params)
               record_params.each do |key, value|
-                @object.send("#{key}=", nil) if value == "%nil%"
+                record_params[key] = nil if value == "%nil%"
               end
+              @object.set_attributes(record_params)
               @authorization_adapter && @authorization_adapter.attributes_for(:update, @abstract_model).each do |name, value|
                 @object.send("#{name}=", value)
               end
