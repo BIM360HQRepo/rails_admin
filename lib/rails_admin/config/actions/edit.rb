@@ -26,6 +26,7 @@ module RailsAdmin
 
               @object.set_attributes(params[@abstract_model.param_key])
               @authorization_adapter && @authorization_adapter.attributes_for(:update, @abstract_model).each do |name, value|
+                value = nil if value == "%@nil@%"
                 @object.send("#{name}=", value)
               end
               changes = @object.changes
